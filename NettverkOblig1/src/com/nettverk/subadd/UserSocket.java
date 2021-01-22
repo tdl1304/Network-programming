@@ -1,4 +1,4 @@
-package com.nettverk.SubAdd;
+package com.nettverk.subadd;
 
 import java.io.*;
 import java.net.*;
