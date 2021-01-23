@@ -1,0 +1,3 @@
+[submodule "SimpleWebServer"]
+	path = SimpleWebServer
+	url = https://github.com/tdl1304/SimpleWebServer.git
