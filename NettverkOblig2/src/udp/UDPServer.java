@@ -12,39 +12,35 @@ class UDPServer {
         DatagramSocket server = null;
 
         try {
-            server = new DatagramSocket(PORTNR);
+            server = new DatagramSocket(PORTNR); //Lytteport
             while (true) {
                 byte[] buffer = new byte[32];
-                DatagramSocket finalServer = server; // reference to this server
                 DatagramPacket dataRecieved = new DatagramPacket(buffer, buffer.length); // set to recieve 32 bytes of data
                 server.receive(dataRecieved);// venter inntil en pakke blir mottatt
                 System.out.println(LocalDateTime.now());
                 String data = new String(dataRecieved.getData(), 0, dataRecieved.getLength());
                 InetAddress address = dataRecieved.getAddress();
-                System.out.println("Mottok '" + data + "' fra klienten " + address.toString());
+                int port = dataRecieved.getPort();
+                System.out.println("Mottok '" + data + "' fra klienten " + address.toString() + ':' + port);
 
-
-                //Starter ny tråd for hver nye klient
-                Thread thread = new Thread(() -> {
-                    try {
-                        // Mottar data fra klienten
-                        String enLinje = data;// mottar en linje med tekst
-                        int buf = 0;
-                        buf = calculate(enLinje);
-                        System.out.println("En klient skrev: " + enLinje);
-                        if (buf == Integer.MAX_VALUE) {
-                            System.out.println("Respons som sendes er: ugyldig format");
-                            sendMsg("Ugyldig format", address, PORTNR, finalServer);// sender svar til klienten
-                        } else {
-                            System.out.println("Respons som sendes er '" + buf + "'");
-                            // sender svar til klienten
-                            sendMsg(enLinje + " = " + buf, address, PORTNR, finalServer);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    // Mottar data fra klienten
+                    String enLinje = data;// mottar en linje med tekst
+                    int buf = 0;
+                    buf = calculate(enLinje);
+                    System.out.println("En klient skrev: " + enLinje);
+                    if (buf == Integer.MAX_VALUE) {
+                        System.out.println("Respons som sendes er: ugyldig format");
+                        sendMsg("Ugyldig format", address, port, server);// sender svar til klienten
+                    } else {
+                        System.out.println("Respons som sendes er '" + buf + "'");
+                        // sender svar til klienten
+                        sendMsg(enLinje + " = " + buf, address, port, server);
                     }
-                });
-                thread.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
