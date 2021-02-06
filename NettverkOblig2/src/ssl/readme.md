@@ -1,5 +1,5 @@
-#How to run ssl
-###How to generate keys
+# How to run
+#### How to generate keys  
 * Make a folder
 * cd into it
 * Enter into console: `keytool -genkey -alias -keyalg RSA signFiles -keystore filename`
