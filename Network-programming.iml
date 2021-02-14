@@ -6,6 +6,9 @@
       <sourceFolder url="file://$MODULE_DIR$/NettverkOblig1/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/NettverkOblig2/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/NettverkOblig3/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NettverkOblig3/threads/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/NettverkOblig3/threads/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
