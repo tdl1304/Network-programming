@@ -1,26 +1,42 @@
-use std::thread;
+use std::{thread, time};
 use std::sync::{mpsc, Mutex, Arc};
-use std::io::{stdin,stdout,Write};
+use std::io::{stdin};
+use std::time::{Instant};
 
 
 fn main() {
     let (tx, rx) = mpsc::channel(); //tx = transmitter , rx = receieve
-    let c = Arc::new(Mutex::new(0)); //count
+    let c = Arc::new(Mutex::new(0)); //counter
     let mut threads = vec![];
     let mut primes: Vec<u32> = vec![];
+    let r: u32;
 
     let (lim, thread_count) = user_input();
-    let range = lim/thread_count;
+    //ceil division
+    if lim % thread_count == 0 {
+        r = &lim/&thread_count;
+    } else {
+        r = &lim/&thread_count+1;
+    }
 
+    println!("Counting time for finding primes");
+    let start = Instant::now();
     for i in 0..thread_count {
-        let tx_ = tx.clone();
+        let counter = Arc::clone(&c);
+        let tx_clone = tx.clone();
         threads.push(thread::spawn(move || {
-            for j in i*range+1..=(i+1)*range {
-                if prime_check(j) {
-                    tx_.send(val).unwrap(j); //send message
+            let mut count: u32 = 0;
+            for j in i*&r..(i+1)*&r {
+                if j >= lim {
+                    break;
+                } else {
+                    if prime_check(j) {
+                        tx_clone.send(j).unwrap(); //send message
+                        count += 1;
+                    }
                 }
             }
-
+            *counter.lock().unwrap() += count;
         }));
     }
 
@@ -29,18 +45,21 @@ fn main() {
         t.join().unwrap();
     }
 
-    let mut it = rx.iter();
+    let duration = start.elapsed();
 
 
+    for it in rx.iter().take(*c.lock().unwrap() as usize) {
+        primes.push(it);
+    }
 
+    primes.sort_unstable();
+    for prime in primes {
+        println!("{}", prime);
+    }
 
-
-
-
-    //primes.sort_unstable();
-    //println!("{}", primes[0]);
-
-
+    println!("Time elapsed is: {:#?}", duration);
+    let millis = time::Duration::from_millis(5000);
+    thread::sleep(millis);
 }
 
 fn user_input() -> (u32, u32) {
@@ -58,7 +77,7 @@ fn user_input() -> (u32, u32) {
         .expect("Did not enter a correct string");
     let trimmed1 = s1.trim();
     let trimmed2 = s2.trim();
-    match trimmed1.parse::<u32>() {
+    match s1.trim().parse::<u32>() {
         Ok(i) => a = i,
         Err(..) => println!("this was not an integer: {}", trimmed1),
     };
@@ -66,12 +85,15 @@ fn user_input() -> (u32, u32) {
         Ok(i) => b = i,
         Err(..) => println!("this was not an integer: {}", trimmed2),
     };
+    if a < b {
+        panic!("Upper limit is greater than amount of threads");
+    }
     (a, b)
 }
 
 fn prime_check(n:u32) -> bool {
     let num:u32 = (n as f64).sqrt().floor() as u32;
-    if n < 1 { return false };
+    if n <= 1 { return false };
     for i in 2..=num {
         if n % i == 0 {
             return false;
