@@ -42,6 +42,7 @@ public class SSLServer {
                     out.println(line);
                 }
             }
+            sslServerSocket.close();
             System.out.println("Closed");
 
         } catch (IOException ex) {

@@ -32,6 +32,7 @@ public class SSLClient {
                     System.out.println("Enter something:");
                     String inputLine = scanner.nextLine();
                     if(inputLine.equals("q")){
+                        socket.close();
                         break;
                     }
 
