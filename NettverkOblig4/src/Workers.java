@@ -10,7 +10,7 @@ public class Workers {
     private final Lock lock = new ReentrantLock();
     private final Condition cv = lock.newCondition();
     private final ExecutorService executor;
-    private final List<Callable<Object>> tasks = new ArrayList<>();
+    private final List<Runnable> tasks = new ArrayList<>();
     private boolean stopsignal = false;
 
 
@@ -18,7 +18,7 @@ public class Workers {
         executor = Executors.newFixedThreadPool(poolsize);
     }
 
-    public void post(Callable<Object> task) {
+    public void post(Runnable task) {
         lock.lock();
         tasks.add(task);
         cv.signal();
@@ -50,19 +50,18 @@ public class Workers {
     /**
      * Set timeout for task
      *
-     * @param task  Callable
+     * @param task  Runnable
      * @param delay millis to wait
      */
-    public void post_timeout(Callable<Object> task, long delay) {
+    public void post_timeout(Runnable task, long delay) {
         lock.lock();
         tasks.add(() -> {
             try {
                 Thread.sleep(delay);
-                task.call();
+                task.run();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return null;
         });
         cv.signal();
         lock.unlock();

@@ -7,31 +7,25 @@ public class Main {
 
         worker_threads.post(()->{
             System.out.println("Hello from task A: "+Thread.currentThread().getName());
-            return null;
         });
         worker_threads.post(()->{
             System.out.println("Hello from task B: "+Thread.currentThread().getName());
-            return null;
         });
 
         event_loop.post(()->{
             System.out.println("Hello from task C: "+Thread.currentThread().getName());
-            return null;
         });
 
         event_loop.post(()->{
             System.out.println("Hello from task D: "+Thread.currentThread().getName());
-            return null;
         });
 
         worker_threads.post_timeout(()->{
             System.out.println("Worker_thread timeout task just ran");
-            return null;
         }, 6000);
 
         event_loop.post_timeout(()->{
             System.out.println("Eventloop timeout task just ran");
-            return null;
         }, 2000);
 
         worker_threads.join();
