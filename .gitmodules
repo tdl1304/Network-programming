@@ -2,5 +2,5 @@
 	path = SimpleWebServer
 	url = https://github.com/tdl1304/SimpleWebServer.git
 [submodule "CompilerWebServer"]
-    path = CompilerWebServer
-    url = https://github.com/tdl1304/CompilerWebServer.git
+	path = CompilerWebServer
+	url = https://github.com/tdl1304/CompilerWebServer.git
