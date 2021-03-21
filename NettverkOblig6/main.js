@@ -87,7 +87,6 @@ function decodeMsg(bytes) {
             msg += String.fromCharCode(byte);
         }
         return msg;
-    } else {
-        return null;
     }
+    return null;
 }
